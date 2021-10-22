@@ -22,10 +22,10 @@
                 <p class="card-text">Category: @element.ProductCategory.Department</p>
                 <p class="card-text">Supplier: @element.Supplier.Name</p>
                 <p class="card-text text-center"><strong>Price: @element.DefaultPrice.ToString("C2")</strong></p>
-                <button type="button" class="btn btn-primary" asp-controller="cart" asp-action="add" asp-route-id="@element.Id">Add To Cart</button>
+                <a type="button" class="btn btn-primary" asp-controller="Cart" asp-action="Add" asp-route-id="@element.Id">Add To Cart</a>
+                <a type="button" class="btn btn-primary" asp-controller="Cart" asp-action="ViewCart">View Cart</a>
             </div>
         </div>
-        <button type="button" class="btn btn-primary" asp-controller="cart" asp-action="viewcart" asp-route-id="@element.Id">View Cart</button>
     </div>
     }
      

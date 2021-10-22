@@ -12,7 +12,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Codecool.CodecoolShop.Controllers
 {
-    [Route("cart")]
     public class CartController : Controller
     {
         private readonly ILogger<CartController> _logger;
@@ -29,23 +28,24 @@ namespace Codecool.CodecoolShop.Controllers
 
        
 
-        [Route("index")]
+        //[Route("index")]
         public IActionResult Index()
         {
             
             return View(ProductService.cartDao.GetAll());
         }
 
-        [Route("add/{id}")]
+        //[Route("add/{id}")]
         public IActionResult Add(string id)
         {
             Product item = ProductService.cartDao.Get(Int32.Parse(id));
             ProductService.cartDao.Add(item);
+            Console.WriteLine(ProductService.cartDao.GetAll().ToString());
             return RedirectToAction("Index");
         }
 
 
-        [Route("remove/{id}")]
+        //[Route("remove/{id}")]
         public IActionResult Remove(string id)
         {
             ProductService.cartDao.Remove(Int32.Parse(id));
@@ -53,11 +53,11 @@ namespace Codecool.CodecoolShop.Controllers
         }
 
 
-        [Route("cart")]
+        //[Route("cart")]
         public IActionResult ViewCart()
         {
             ViewBag.cart = ProductService.cartDao.GetAll();
-            return RedirectToAction("Cart");
+            return View("/Views/Product/Cart.cshtml");
         }
 
     }
