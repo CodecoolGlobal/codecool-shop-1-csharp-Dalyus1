@@ -1,14 +1,14 @@
-﻿using Codecool.CodecoolShop.Helpers;
-using Codecool.CodecoolShop.Models;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Codecool.CodecoolShop.Services;
+using Codecool.CodecoolShop.Daos;
 using Codecool.CodecoolShop.Daos.Implementations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Codecool.CodecoolShop.Models;
+using Codecool.CodecoolShop.Services;
 
 namespace Codecool.CodecoolShop.Controllers
 {
@@ -17,47 +17,47 @@ namespace Codecool.CodecoolShop.Controllers
         private readonly ILogger<CartController> _logger;
         public ProductService ProductService { get; set; }
 
+
+
         public CartController(ILogger<CartController> logger)
         {
             _logger = logger;
             ProductService = new ProductService(
                 ProductDaoMemory.GetInstance(),
                 ProductCategoryDaoMemory.GetInstance(),
-                CartDaoMemory.GetInstance());
-        }
-
-       
-
-        //[Route("index")]
-        public IActionResult Index()
-        {
-            
-            return View(ProductService.cartDao.GetAll());
+                CartDaoMemory.GetInstance()
+                );
         }
 
         //[Route("add/{id}")]
-        public IActionResult Add(string id)
+        public ActionResult Add(string Command)
         {
-            Product item = ProductService.cartDao.Get(Int32.Parse(id));
-            ProductService.cartDao.Add(item);
-            Console.WriteLine(ProductService.cartDao.GetAll().ToString());
-            return RedirectToAction("Index");
+            string[] commands = Command.Split(',');
+            int ID = Convert.ToInt32(commands.First());
+            int categoryId = Convert.ToInt32(commands.Last());
+            var products = ProductService.GetProductsForCategory(categoryId);
+            Product product = products.Where(t => t.Id == ID).First();
+            List<Product> InCart = (List<Product>)ProductService.GetCart();
+            ProductService.cartDao.Add(product);
+
+            return RedirectToAction("Index", "Product");
         }
 
 
         //[Route("remove/{id}")]
-        public IActionResult Remove(string id)
+        public ActionResult Remove(int Id)
         {
-            ProductService.cartDao.Remove(Int32.Parse(id));
-            return RedirectToAction("Index");
+            ProductService.cartDao.Remove(Id);
+
+            return RedirectToAction("Index", "Product");
         }
 
 
-        //[Route("cart")]
-        public IActionResult ViewCart()
+        //[Route("Cart")]
+        public ActionResult ViewCart()
         {
-            ViewBag.cart = ProductService.cartDao.GetAll();
-            return View("/Views/Product/Cart.cshtml");
+            List<Product> InCart = (List<Product>)ProductService.GetCart();
+            return View("Cart", InCart);
         }
 
     }

@@ -46,7 +46,7 @@ namespace Codecool.CodecoolShop.Daos.Implementations
         public void Remove(int id)
         {
             Product item = Get(id);
-            if (item.Quantity <= 1)
+            if (item.Quantity >= 1)
             {
                 item.Quantity -= 1;
             }
